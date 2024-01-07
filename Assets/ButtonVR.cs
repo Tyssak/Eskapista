@@ -1,16 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UIElements;
 
 public class ButtonVR : MonoBehaviour
 {
+    public enum ButtonType
+    {
+        OnOff,
+        Reset,
+        Next,
+        Prev,
+        Reverse,
+        Plus,
+        Minus
+    }
+
     public GameObject button;
     public UnityEvent onPress;
     public UnityEvent onRelease;
     GameObject presser;
     AudioSource sound;
     bool isPressed;
+    public ButtonType buttonType;
+    public changePicture pictureScript;
     void Start()
     {
         sound = GetComponent<AudioSource>();
@@ -34,27 +50,14 @@ public class ButtonVR : MonoBehaviour
         {
             button.transform.localPosition = new Vector3(0, 0, 0);
             onRelease.Invoke();
+
+            // Call the function in the changePicture script
+            if (pictureScript != null)
+            {
+                pictureScript.HandleButtonRelease(buttonType);
+            }
             isPressed = false;
         }
     }
 
-    public void ResetFilters() 
-    {
-        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        sphere.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-        sphere.transform.localPosition = new Vector3(0, 1, 2);
-        sphere.AddComponent<Rigidbody>();
-    }
-    public void NextFilter()
-    {
-
-    }
-    public void PrevFilter()
-    {
-
-    }
-    public void AdjustFilter()
-    {
-
-    }
 }
