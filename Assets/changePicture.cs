@@ -7,7 +7,7 @@ public class changePicture : MonoBehaviour
 {
     public Renderer screenRenderer;
     public Texture2D pg;
-    private Texture2D modificable_pg;
+    public Texture2D modificable_pg;
     private Texture2D prev_pg;
     public Texture2D inverted_pg;
     private Texture2D blackTexture;
@@ -26,7 +26,7 @@ public class changePicture : MonoBehaviour
         material = screenRenderer.material;
         //material.SetColor("_EmissionColor", Color.black);
         activeFilter = 0;
-        filterIntesity = 0.2f;
+        filterIntesity = 0.0f;
 
         buttonScript = GetComponent<ButtonVR>();
         changeTextVisibility();
@@ -60,30 +60,30 @@ public class changePicture : MonoBehaviour
                 break;
 
             case ButtonVR.ButtonType.Reset:
-                changeText();
                 ResetFilters();
+                changeText();
                 break;
 
             case ButtonVR.ButtonType.Next:
-                changeText();
                 NextFilter();
+                changeText();
                 break;
 
             case ButtonVR.ButtonType.Prev:
-                changeText();
                 PrevFilter();
+                changeText();
                 break;
 
             case ButtonVR.ButtonType.Reverse:
                 ReverseColors();
                 break;
             case ButtonVR.ButtonType.Plus:
-                changeText();
                 ChangeIntensity(true);
+                changeText();
                 break;
             case ButtonVR.ButtonType.Minus:
-                changeText();
                 ChangeIntensity(false);
+                changeText();
                 break;
             default:
                 Debug.LogWarning("Unknown button type: " + buttonType);
@@ -164,6 +164,8 @@ public class changePicture : MonoBehaviour
         if (screenRenderer != null && isScreenActive && material != null && material.mainTexture != null)
         {
             filterIntesity = 0.0f;
+            activeFilter = 0;
+            reversedColors = false;
             modificable_pg = pg;
             material.mainTexture = modificable_pg;
         }
@@ -184,6 +186,7 @@ public class changePicture : MonoBehaviour
             activeFilter++;
         }
         filterIntesity = 0.0f;
+        prev_pg = modificable_pg;
         changeDisplayedImage();
     }
     public void PrevFilter()
@@ -197,20 +200,22 @@ public class changePicture : MonoBehaviour
             activeFilter--;
         }
         filterIntesity = 0.0f;
+        prev_pg = modificable_pg;
         changeDisplayedImage();
     }
     public void ChangeIntensity(bool up)
     {
         if (up && filterIntesity < 0.9f)
         {
-            filterIntesity += 0.2f;
+            filterIntesity += 0.25f;
+            changeDisplayedImage();
         }
         else if(!up && filterIntesity > 0.1f)
         {
-            filterIntesity -= 0.2f;
+            filterIntesity -= 0.25f;
             modificable_pg = prev_pg;
+            changeDisplayedImage();
         }
-        changeDisplayedImage();
     }
     public void ReverseColors()
     {
@@ -242,16 +247,12 @@ public class changePicture : MonoBehaviour
 
         ApplyFilter(activeFilter);
 
-        material.mainTexture = modificable_pg;
+        //material.mainTexture = modificable_pg;
     }
 
     private void ApplyFilter(int filterIndex)
     {
         isProcessing = true;
-        if(filterIntesity == 0.0f)
-        {
-            prev_pg = modificable_pg;
-        }
 
         switch (filterIndex)
         {
@@ -279,13 +280,13 @@ public class changePicture : MonoBehaviour
         }
 
         isProcessing = false;
+
+        material.mainTexture = modificable_pg;
     }
 
     // Example: Adjust Temperature Filter
     private IEnumerator ModifyTextureTemperature(float filterIntesity)
     {
-        // Implement logic to adjust temperature
-        // Modify the colors of the texture based on the temperature factor
         float temperature = 1.0f + filterIntesity;
         Color[] pixels = modificable_pg.GetPixels();
         for (int i = 0; i < pixels.Length; i++)
