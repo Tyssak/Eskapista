@@ -7,24 +7,22 @@ public class changePicture : MonoBehaviour
 {
     public Renderer screenRenderer;
     public Texture2D pg;
-    public Texture2D modificable_pg;
+    private Texture2D modificable_pg;
     private Texture2D prev_pg;
     public Texture2D inverted_pg;
     private Texture2D blackTexture;
     private ButtonVR buttonScript;
-    public Material material;
-    public int activeFilter;
-    public float filterIntesity;
-    public bool isScreenActive;
-    public bool reversedColors;
+    private Material material;
+    private int activeFilter;
+    private float filterIntesity;
+    private bool isScreenActive;
+    private bool reversedColors;
     public TextMeshPro textToShow;
 
     private bool isProcessing = false;
-    // Start is called before the first frame update
     void Start()
     {
         material = screenRenderer.material;
-        //material.SetColor("_EmissionColor", Color.black);
         activeFilter = 0;
         filterIntesity = 0.0f;
 
@@ -33,7 +31,7 @@ public class changePicture : MonoBehaviour
 
         modificable_pg = pg;
         prev_pg = pg;
-        // Creating a 1x1 black texture
+        // When screen is off
         blackTexture = new Texture2D(1, 1);
         ((Texture2D)blackTexture).SetPixel(0, 0, Color.black);
         ((Texture2D)blackTexture).Apply();
@@ -43,7 +41,6 @@ public class changePicture : MonoBehaviour
         reversedColors = false;
     }
 
-    // Handle the button release event
     public void HandleButtonRelease(ButtonVR.ButtonType buttonType)
     {
         if (isProcessing)
@@ -51,7 +48,7 @@ public class changePicture : MonoBehaviour
             Debug.Log("Already processing, please wait.");
             return;
         }
-
+        // Activate button actions
         switch (buttonType)
         {
             case ButtonVR.ButtonType.OnOff:
@@ -90,25 +87,27 @@ public class changePicture : MonoBehaviour
                 break;
         }
     }
+
+    // Changes displayed text
     private void changeText()
     {
         int currentValue = (int)(filterIntesity * 100.0f);
         switch (activeFilter)
         {
             case 0:
-                textToShow.text = "None \nIntensity: " + currentValue + "%";
-                break;
-            case 1:
                 textToShow.text = "Temperature \nIntensity: " + currentValue + "%";
                 break;
-            case 2:
+            case 1:
                 textToShow.text = "Grayscale \nIntensity: " + currentValue + "%";
                 break;
-            case 3:
+            case 2:
                 textToShow.text = "Sepia \nIntensity: " + currentValue + "%";
                 break;
-            case 4:
+            case 3:
                 textToShow.text = "EdgeDetection \nIntensity: " + currentValue + "%";
+                break;
+            case 4:
+                textToShow.text = "Blur \nIntensity: " + currentValue + "%";
                 break;
             default:
                 textToShow.text = "Error";
@@ -122,7 +121,7 @@ public class changePicture : MonoBehaviour
             Color textColorTransparent = textToShow.color;
             Color textColor = textToShow.color;
 
-            // Set the alpha component to 0 (fully transparent)
+            // Make text fully transparent when screen is off
             textColorTransparent.a = 0;
             textColor.a = 1;
             if (isScreenActive)
@@ -144,7 +143,6 @@ public class changePicture : MonoBehaviour
     {
         isScreenActive = !isScreenActive;
 
-        // Toggle the visibility of the screenObject based on isScreenActive
         if (screenRenderer != null)
         {
 
@@ -171,10 +169,11 @@ public class changePicture : MonoBehaviour
         }
         else
         {
-            // Handle the case where the texture or material is not available, or colors don't need to be reversed
             Debug.LogWarning("Unable to reset picture. Check if the texture and material are assigned.");
         }
     }
+
+    // Change active filter
     public void NextFilter()
     {
         if (activeFilter > 3)
@@ -203,6 +202,8 @@ public class changePicture : MonoBehaviour
         prev_pg = modificable_pg;
         changeDisplayedImage();
     }
+
+    // Change filter intesity
     public void ChangeIntensity(bool up)
     {
         if (up && filterIntesity < 0.9f)
@@ -212,6 +213,7 @@ public class changePicture : MonoBehaviour
         }
         else if(!up && filterIntesity > 0.1f)
         {
+            // If intesnisty is lower then reset the image to the image before applying this filter and apply weaker filter again
             filterIntesity -= 0.25f;
             modificable_pg = prev_pg;
             changeDisplayedImage();
@@ -223,7 +225,6 @@ public class changePicture : MonoBehaviour
         {
             reversedColors = !reversedColors;
 
-            // Apply the inverted texture to the material
             if (reversedColors)
             {
                 modificable_pg = inverted_pg;
@@ -237,17 +238,13 @@ public class changePicture : MonoBehaviour
         }
         else
         {
-            // Handle the case where the texture or material is not available, or colors don't need to be reversed
             Debug.LogWarning("Unable to reverse colors. Check if the texture and material are assigned and colors need to be reversed.");
         }
     }
 
     private void changeDisplayedImage()
     {
-
         ApplyFilter(activeFilter);
-
-        //material.mainTexture = modificable_pg;
     }
 
     private void ApplyFilter(int filterIndex)
@@ -256,23 +253,23 @@ public class changePicture : MonoBehaviour
 
         switch (filterIndex)
         {
-            case 1:
-                // Example: Adjust Temperature
+            case 0:
                 StartCoroutine(ModifyTextureTemperature(filterIntesity));
                 break;
-
-            case 2:
-                // Example: Apply Grayscale Filter
+            case 1:
                 StartCoroutine(ApplyGrayscaleFilter(filterIntesity));
                 break;
 
-            case 3:
-                // Example: Apply Sepia Filter
+            case 2:
                 StartCoroutine(ApplySepiaFilter(filterIntesity));
                 break;
 
-            case 4:
+            case 3:
                 StartCoroutine(ApplyEdgeDetectionFilter(filterIntesity));
+                break;
+
+            case 4:
+                StartCoroutine(ApplyBlurFilter(filterIntesity));
                 break;
 
             default:
@@ -284,7 +281,6 @@ public class changePicture : MonoBehaviour
         material.mainTexture = modificable_pg;
     }
 
-    // Example: Adjust Temperature Filter
     private IEnumerator ModifyTextureTemperature(float filterIntesity)
     {
         float temperature = 1.0f + filterIntesity;
@@ -294,10 +290,6 @@ public class changePicture : MonoBehaviour
             pixels[i] *= temperature;
         }
         yield return null;
-        for (int i = 0; i < pixels.Length; i++)
-        {
-            pixels[i] = Color.Lerp(modificable_pg.GetPixel(i % modificable_pg.width, i / modificable_pg.width), pixels[i], filterIntesity);
-        }
         Texture2D texture = new Texture2D(modificable_pg.width, modificable_pg.height);
         texture.SetPixels(pixels);
         texture.Apply();
@@ -309,19 +301,24 @@ public class changePicture : MonoBehaviour
 
     private IEnumerator ApplyGrayscaleFilter(float filterIntesity)
     {
-        Color[] pixels = modificable_pg.GetPixels();
-        for (int i = 0; i < pixels.Length; i++)
+        if(filterIntesity > 0.1f)
         {
-            float luminance = pixels[i].r * 0.299f + pixels[i].g * 0.587f + pixels[i].b * 0.114f;
-            pixels[i] = new Color(luminance, luminance, luminance, pixels[i].a);
+            Color[] pixels = modificable_pg.GetPixels();
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                float luminance = pixels[i].r * 0.299f + pixels[i].g * 0.587f + pixels[i].b * 0.114f;
+                pixels[i] = new Color(luminance, luminance, luminance, pixels[i].a);
+            }
+            yield return null;
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                pixels[i] = Color.Lerp(modificable_pg.GetPixel(i % modificable_pg.width, i / modificable_pg.width), pixels[i], filterIntesity);
+            }
+            Texture2D texture = new Texture2D(modificable_pg.width, modificable_pg.height);
+            texture.SetPixels(pixels);
+            texture.Apply();
+            modificable_pg = texture;
         }
-        yield return null;
-        for (int i = 0; i < pixels.Length; i++)
-        {
-            pixels[i] = Color.Lerp(modificable_pg.GetPixel(i % modificable_pg.width, i / modificable_pg.width), pixels[i], filterIntesity);
-        }
-        modificable_pg.SetPixels(pixels);
-        modificable_pg.Apply();
 
         material.mainTexture = modificable_pg;
         yield return null;
@@ -343,9 +340,10 @@ public class changePicture : MonoBehaviour
         {
             pixels[i] = Color.Lerp(modificable_pg.GetPixel(i % modificable_pg.width, i / modificable_pg.width), pixels[i], filterIntesity);
         }
-        modificable_pg.SetPixels(pixels);
-        modificable_pg.Apply();
-
+        Texture2D texture = new Texture2D(modificable_pg.width, modificable_pg.height);
+        texture.SetPixels(pixels);
+        texture.Apply();
+        modificable_pg = texture;
         material.mainTexture = modificable_pg;
         yield return null;
     }
@@ -357,7 +355,6 @@ public class changePicture : MonoBehaviour
 
         Color[] newPixels = new Color[width * height];
 
-        // Define a simple 3x3 edge detection kernel
         float[,] kernel = new float[,]
         {
         { -1, -1, -1 },
@@ -387,16 +384,69 @@ public class changePicture : MonoBehaviour
                 }
 
                 int index = y * width + x;
-                //newPixels[index] = new Color(Mathf.Clamp01(sumR), Mathf.Clamp01(sumG), Mathf.Clamp01(sumB), pixels[index].a);
                 newPixels[index] = Color.Lerp(pixels[index], new Color(Mathf.Clamp01(sumR), Mathf.Clamp01(sumG), Mathf.Clamp01(sumB), pixels[index].a), filterIntesity);
             }
         }
         yield return null;
-        modificable_pg.SetPixels(newPixels);
-        modificable_pg.Apply();
+        Texture2D texture = new Texture2D(width, height);
+        texture.SetPixels(newPixels);
+        texture.Apply();
+        modificable_pg = texture;
 
         material.mainTexture = modificable_pg;
         yield return null;
 
     }
+
+    private IEnumerator ApplyBlurFilter(float filterIntensity)
+    {
+        Color[] pixels = modificable_pg.GetPixels();
+        int width = modificable_pg.width;
+        int height = modificable_pg.height;
+
+        Color[] newPixels = new Color[width * height];
+
+        float[,] kernel = new float[,]
+        {
+        { 1, 1, 1 },
+        { 1, 1, 1 },
+        { 1, 1, 1 }
+        };
+
+        float kernelWeight = 9; 
+
+        for (int y = 1; y < height - 1; y++)
+        {
+            for (int x = 1; x < width - 1; x++)
+            {
+                float sumR = 0, sumG = 0, sumB = 0;
+
+                for (int ky = -1; ky <= 1; ky++)
+                {
+                    for (int kx = -1; kx <= 1; kx++)
+                    {
+                        int pixelX = x + kx;
+                        int pixelY = y + ky;
+
+                        Color pixelColor = pixels[pixelY * width + pixelX];
+
+                        sumR += pixelColor.r * kernel[ky + 1, kx + 1];
+                        sumG += pixelColor.g * kernel[ky + 1, kx + 1];
+                        sumB += pixelColor.b * kernel[ky + 1, kx + 1];
+                    }
+                }
+
+                int index = y * width + x;
+                newPixels[index] = Color.Lerp(pixels[index], new Color(sumR / kernelWeight, sumG / kernelWeight, sumB / kernelWeight, pixels[index].a), filterIntensity);
+            }
+        }
+        Texture2D texture = new Texture2D(width, height);
+        texture.SetPixels(newPixels);
+        texture.Apply();
+        modificable_pg = texture;
+
+        material.mainTexture = modificable_pg;
+        yield return null;
+    }
+
 }

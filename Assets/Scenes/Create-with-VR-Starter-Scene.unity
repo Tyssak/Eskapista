@@ -3171,14 +3171,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   screenRenderer: {fileID: 681485379}
-  pg: {fileID: 2800000, guid: a855a19b81e74d945835c7b6afb73207, type: 3}
-  modificable_pg: {fileID: 0}
-  inverted_pg: {fileID: 2800000, guid: cf9b58bbf56747c43b0ca6aba76acdb5, type: 3}
-  material: {fileID: 0}
-  activeFilter: 0
-  filterIntesity: 0
-  isScreenActive: 0
-  reversedColors: 0
+  pg: {fileID: 2800000, guid: 195a27ac9f4544e47b087c84349bba86, type: 3}
+  inverted_pg: {fileID: 2800000, guid: d2454f44eeb8afc4b85fad111f2bbd07, type: 3}
   textToShow: {fileID: 1835470974}
 --- !u!4 &681485383 stripped
 Transform:
@@ -10249,7 +10243,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'None
+  m_text: 'Temperature
 
     Intensity 0.0'
   m_isRightToLeft: 0
