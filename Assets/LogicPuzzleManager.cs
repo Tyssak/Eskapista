@@ -1,12 +1,18 @@
 using UnityEngine;
-using UnityEngine.Events;
 
 public class LogicPuzzleManager : MonoBehaviour
 {
     [SerializeField] private int numberOfSlots;
-    [SerializeField] private int _insertedCorrectly;
+    [SerializeField] private Animator _animator;
+    private int _insertedCorrectly;
+    private AudioSource _sound;
+    private bool _solved;
+    private static readonly int LogicPuzzleSolved = Animator.StringToHash("LogicPuzzleSolved");
 
-    [Header("Completion Events")] public UnityEvent onPuzzleCompletion;
+    void Start()
+    {
+        _sound = GetComponent<AudioSource>();
+    }
 
     public void InsertedCorrectPiece()
     {
@@ -18,9 +24,11 @@ public class LogicPuzzleManager : MonoBehaviour
 
     private void CheckForCompletion()
     {
-        if (_insertedCorrectly == numberOfSlots)
+        if (!_solved && _insertedCorrectly == numberOfSlots)
         {
-            onPuzzleCompletion.Invoke();
+            _solved = true;
+            _sound.Play();
+            _animator.SetBool(LogicPuzzleSolved, true);
         }
     }
 }

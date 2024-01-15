@@ -6,8 +6,13 @@ public class LogicPuzzleSlot : MonoBehaviour
     [SerializeField] private LogicPuzzleManager _puzzleManager;
     [SerializeField] private Transform _correctTile;
     private XRSocketInteractor _socketInteractor;
+    private AudioSource _sound;
 
-    private void Awake() => _socketInteractor = GetComponent<XRSocketInteractor>();
+    private void Awake()
+    {
+        _socketInteractor = GetComponent<XRSocketInteractor>();
+        _sound = GetComponent<AudioSource>();
+    }
 
     private void OnEnable()
     {
@@ -23,6 +28,8 @@ public class LogicPuzzleSlot : MonoBehaviour
         {
             _puzzleManager.InsertedCorrectPiece();
         }
+
+        _sound.Play();
     }
     
     private void ObjectRemoved(SelectExitEventArgs arg0)
