@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18388051, g: 0.22880398, b: 0.30182412, a: 1}
+  m_IndirectSpecularColor: {r: 0.1838805, g: 0.22880393, b: 0.30182394, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4034,8 +4034,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   screenRenderer: {fileID: 681485379}
-  pg: {fileID: 2800000, guid: 195a27ac9f4544e47b087c84349bba86, type: 3}
-  inverted_pg: {fileID: 2800000, guid: d2454f44eeb8afc4b85fad111f2bbd07, type: 3}
+  pg: {fileID: 2800000, guid: a855a19b81e74d945835c7b6afb73207, type: 3}
+  inverted_pg: {fileID: 2800000, guid: cf9b58bbf56747c43b0ca6aba76acdb5, type: 3}
   textToShow: {fileID: 1835470974}
 --- !u!4 &681485383 stripped
 Transform:
@@ -8360,6 +8360,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Device Simulator
       objectReference: {fileID: 0}
+    - target: {fileID: 6598815579406187037, guid: 18ddb545287c546e19cc77dc9fbb2189,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8861,7 +8866,7 @@ MonoBehaviour:
   m_OriginBaseGameObject: {fileID: 1313711679}
   m_CameraFloorOffsetObject: {fileID: 650672841}
   m_RequestedTrackingOriginMode: 1
-  m_CameraYOffset: 1.1176
+  m_CameraYOffset: 1.8
 --- !u!4 &1313711681
 Transform:
   m_ObjectHideFlags: 0
