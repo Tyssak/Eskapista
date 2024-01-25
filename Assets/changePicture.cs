@@ -1,7 +1,6 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using static ButtonVR;
 
 public class changePicture : MonoBehaviour
 {
@@ -11,7 +10,7 @@ public class changePicture : MonoBehaviour
     private Texture2D prev_pg;
     public Texture2D inverted_pg;
     private Texture2D blackTexture;
-    private ButtonVR buttonScript;
+    private FiltersRiddleButton buttonScript;
     private Material material;
     private int activeFilter;
     private float filterIntesity;
@@ -26,7 +25,7 @@ public class changePicture : MonoBehaviour
         activeFilter = 0;
         filterIntesity = 0.0f;
 
-        buttonScript = GetComponent<ButtonVR>();
+        buttonScript = GetComponent<FiltersRiddleButton>();
         changeTextVisibility();
 
         modificable_pg = pg;
@@ -41,7 +40,7 @@ public class changePicture : MonoBehaviour
         reversedColors = false;
     }
 
-    public void HandleButtonRelease(ButtonVR.ButtonType buttonType)
+    public void HandleButtonRelease(FiltersRiddleButton.FiltersRiddleButtonType buttonType)
     {
         if (isProcessing)
         {
@@ -51,34 +50,34 @@ public class changePicture : MonoBehaviour
         // Activate button actions
         switch (buttonType)
         {
-            case ButtonVR.ButtonType.OnOff:
+            case FiltersRiddleButton.FiltersRiddleButtonType.OnOff:
                 TurnScreenOnOff();
                 changeTextVisibility();
                 break;
 
-            case ButtonVR.ButtonType.Reset:
+            case FiltersRiddleButton.FiltersRiddleButtonType.Reset:
                 ResetFilters();
                 changeText();
                 break;
 
-            case ButtonVR.ButtonType.Next:
+            case FiltersRiddleButton.FiltersRiddleButtonType.Next:
                 NextFilter();
                 changeText();
                 break;
 
-            case ButtonVR.ButtonType.Prev:
+            case FiltersRiddleButton.FiltersRiddleButtonType.Prev:
                 PrevFilter();
                 changeText();
                 break;
 
-            case ButtonVR.ButtonType.Reverse:
+            case FiltersRiddleButton.FiltersRiddleButtonType.Reverse:
                 ReverseColors();
                 break;
-            case ButtonVR.ButtonType.Plus:
+            case FiltersRiddleButton.FiltersRiddleButtonType.Plus:
                 ChangeIntensity(true);
                 changeText();
                 break;
-            case ButtonVR.ButtonType.Minus:
+            case FiltersRiddleButton.FiltersRiddleButtonType.Minus:
                 ChangeIntensity(false);
                 changeText();
                 break;
